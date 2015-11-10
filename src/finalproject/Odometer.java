@@ -4,6 +4,11 @@ import lejos.utility.Timer;
 import lejos.utility.TimerListener;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/**
+ * this odometer class runs as a separated thread. Keep tracks of the position of robot
+ * @author DPM, customized by Ryan Xu
+ */
+
 public class Odometer implements TimerListener {
 
 	private Timer timer;
@@ -14,7 +19,14 @@ public class Odometer implements TimerListener {
 	private double[] oldDH, dDH;
 	private Object lock;
 
-	// constructor
+	/**
+	 * constructs the odometer with motors and time intervals for listener.
+	 * @param leftMotor 
+	 * @param rightMotor
+	 * @param INTERVAL time interval odometer pull the data
+	 * @param autostart
+	 */
+	
 	public Odometer(EV3LargeRegulatedMotor leftMotor,
 			EV3LargeRegulatedMotor rightMotor, int INTERVAL, boolean autostart) {
 
@@ -96,28 +108,42 @@ public class Odometer implements TimerListener {
 				position[2] = theta * 180 / Math.PI; // shows theta in degree
 		}
 	}
-	// return X value
+	/**
+	 * get x coordinate
+	 * @return x coordinate
+	 */
 	public double getX() {
 		synchronized (this) {
 			return x;
 		}
 	}
 
-	// return Y value
+	/**
+	 * get y coordinate
+	 * @return y coordinate
+	 */
 	public double getY() {
 		synchronized (this) {
 			return y;
 		}
 	}
 
-	// return theta value
+	/**
+	 * get angle
+	 * @return angle
+	 */
 	public double getAng() {
 		synchronized (this) {
 			return theta;
 		}
 	}
 
-	// set x,y,theta
+	
+	/**
+	 * set position for the odometer
+	 * @param position as a string of coordinates
+	 * @param update as a string of booleans: true as update and false as not update
+	 */
 	public void setPosition(double[] position, boolean[] update) {
 		synchronized (this) {
 			if (update[0])
@@ -129,7 +155,10 @@ public class Odometer implements TimerListener {
 		}
 	}
 
-	// return x,y,theta
+	/**
+	 * get current x,y,angle 
+	 * @param position x=[0],y=[1],angle=[2]
+	 */
 	public void getPosition(double[] position) {
 		synchronized (this) {
 			position[0] = x;
@@ -157,7 +186,13 @@ public class Odometer implements TimerListener {
 		return this.rightMotor;
 	}
 
-	// static 'helper' methods
+	/**
+	 * helper methods
+	 * @param angle if it is less than 0, round up to 
+	 * @return a corrected angle from 0 to 360 degrees
+	 */
+	
+	
 	public static double fixDegAngle(double angle) {
 		if (angle < 0.0)
 			angle = 360.0 + (angle % 360.0);
@@ -165,6 +200,12 @@ public class Odometer implements TimerListener {
 		return angle % 360.0;
 	}
 
+	/**
+	 * helper method that corrects angles those are more than 360 degrees and find minimum angle
+	 * @param a is the first input
+	 * @param b is the second input
+	 * @return a corrected angle
+	 */
 	public static double minimumAngleFromTo(double a, double b) {
 		double d = fixDegAngle(b - a);
 

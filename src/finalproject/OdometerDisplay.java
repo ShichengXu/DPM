@@ -4,9 +4,14 @@
 
 package finalproject;
 
+
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.lcd.TextLCD;
 
+/**
+ * display odometer values on lcd screen as a separated thread
+ * @author DPM, customized by Ryan Xu
+ */
 public class OdometerDisplay extends Thread {
 	private static final long DISPLAY_PERIOD = 250;
 	private Odometer odometer;
@@ -14,8 +19,8 @@ public class OdometerDisplay extends Thread {
 	
 
 	// constructor
-	public OdometerDisplay(Odometer odometer, TextLCD t) {
-		this.odometer = odometer;
+	public OdometerDisplay(Odometer odo, TextLCD t) {
+		this.odometer = odo;
 		this.t = t;
 	}
 

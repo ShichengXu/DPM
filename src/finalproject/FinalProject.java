@@ -1,10 +1,9 @@
 package finalproject;
 
-//import finalproject.LCDInfo;
-//import lab5obj.Odometer;
 
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.Button;
@@ -12,6 +11,10 @@ import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.sensor.EV3TouchSensor;
 
+/**
+ * 2015 DPM final project. main class
+ * @author Ryan
+ */
 public class FinalProject {
 
 	// Static Resources:
@@ -19,7 +22,8 @@ public class FinalProject {
 	// Right motor connected to output D
 	// Ultrasonic sensor port connected to input S1
 	// Color sensor port connected to input S2
-	// Touch sensor port connected to input S3
+	// Left touch sensor port connected to input S3
+	// Right touch sensor port connected to input S4
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(
 			LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(
@@ -41,26 +45,19 @@ public class FinalProject {
 	
 	
 	public static void main(String[] args) {
-	
+		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odo = new Odometer(leftMotor, rightMotor,30,true);
+		OdometerDisplay odometryDisplay = new OdometerDisplay(odo, t);
+		
 		SampleProvider usValue = usSensor.getMode("Distance");
 		
 		Localization usl = new Localization(odo, usValue, usData,touch1,touch2,touchSample1,touchSample2,
 				Localization.LocalizationType.FALLING_EDGE, leftMotor,
 				rightMotor);
+		odo.start();
+		odometryDisplay.start();
 		usl.doLocalization();
 		
-		/*
-		while(true)
-		{
-			touch1.fetchSample(touchSample1,0);
-			touch2.fetchSample(touchSample2, 0);
-			LCD.drawString("value "+touchSample1[0],0,1);
-			LCD.drawString("value2 "+touchSample2[0],0,2);
-			
-			
-		}
-		*/
 	}
 	
 }
